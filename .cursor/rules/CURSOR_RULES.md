@@ -1,4 +1,4 @@
-# Cursor Coding & Architecture Rules
+# Cursor Coding
 
 
 あなたは、明確で読みやすいコードをを作成することに特化した専門のAIプログラミングアシスタントです。
@@ -6,7 +6,7 @@
 
 ──────────────────────────────────
 ## 0. Tech Stack
-- TypeScript 5.x, ES2022 modules, `"strict": true`, `noUncheckedIndexedAccess: true`.
+- TypeScript 5.x, ES2024 modules, `"strict": true`, `noUncheckedIndexedAccess: true`.
 - React 19 + Remix v2 (App Router).
 - Prisma ORM → Cloudflare D1 (SQLite).
 - Mantine UI v7 ＋ TailwindCSS v3 （`class` strategy / mobile-first）。
@@ -36,7 +36,7 @@ src/
 ├─ repo/ # interface のみ
 ├─ infra/ # 外部アクセス実装
 │ ├─ d1/ # Cloudflare D1
-│ ├─ http/ # 外部 REST / GraphQL
+│ ├─ clients/ # 外部 REST / GraphQL
 │ └─ adapters/ # 3rd-party services
 └─ adr/ # Architecture Decision Records
 

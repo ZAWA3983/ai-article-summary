@@ -7,6 +7,7 @@
     "build": "remix build",
     "start": "remix start",
     "typecheck": "tsc",
+    "type-check": "tsc --noEmit",
     "format": "biome format --write .",
     "lint": "biome lint .",
     "check": "biome check --apply .",
@@ -15,6 +16,7 @@
     "test:real": "USE_REAL_API=true vitest"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@mantine/core": "^7.0.0",
     "@mantine/hooks": "^7.0.0",
     "@remix-run/node": "^2.0.0",

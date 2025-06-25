@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
-import type { QuitaArticle } from '../../domain/quita/types';
-import type { QuitaRepository } from '../../repo/quita';
+import type { QuitaArticle } from '../../domain/quita-domain';
+import type { QuitaRepository } from '../../repo/quita-repo';
 
 export class SearchArticlesUseCase {
   constructor(private readonly quitaRepository: QuitaRepository) {}
@@ -18,8 +18,6 @@ export class SearchArticlesUseCase {
     });
 
     // いいね数でソートして上位5件を取得
-    return [...articles]
-      .sort((a, b) => b.likes_count - a.likes_count)
-      .slice(0, 5);
+    return [...articles].sort((a, b) => b.likes_count - a.likes_count).slice(0, 5);
   }
 }
