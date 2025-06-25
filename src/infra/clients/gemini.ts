@@ -107,5 +107,4 @@ export class GeminiClient implements SummarizeRepository {
       throw new Error(`Failed to parse Gemini response as JSON: ${error}`);
     }
   }
-  q;
 }

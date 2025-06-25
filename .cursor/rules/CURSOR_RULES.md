@@ -6,7 +6,7 @@
 
 ──────────────────────────────────
 ## 0. Tech Stack
-- TypeScript 5.x, ES2022 modules, `"strict": true`, `noUncheckedIndexedAccess: true`.
+- TypeScript 5.x, ES2024 modules, `"strict": true`, `noUncheckedIndexedAccess: true`.
 - React 19 + Remix v2 (App Router).
 - Prisma ORM → Cloudflare D1 (SQLite).
 - Mantine UI v7 ＋ TailwindCSS v3 （`class` strategy / mobile-first）。
