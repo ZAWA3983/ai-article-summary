@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
-import type { QuitaArticle } from '../../domain/quita/types';
-import type { QuitaRepository } from '../../repo/quita';
+import type { QuitaArticle } from '../../domain/quita-domain';
+import type { QuitaRepository } from '../../repo/quita-repo';
 
 export class SearchArticlesUseCase {
   constructor(private readonly quitaRepository: QuitaRepository) {}

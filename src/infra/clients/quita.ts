@@ -1,5 +1,5 @@
-import type { QuitaArticle, QuitaSearchParams } from '../../domain/quita/types';
-import type { QuitaRepository } from '../../repo/quita';
+import type { QuitaArticle, QuitaSearchParams } from '../../domain/quita-domain';
+import type { QuitaRepository } from '../../repo/quita-repo';
 
 export class QuitaApi implements QuitaRepository {
   private readonly baseUrl = 'https://qiita.com/api/v2';

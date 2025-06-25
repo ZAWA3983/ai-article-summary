@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { QuitaApi } from '../quita';
-import type { QuitaArticle } from '../../../domain/quita/types';
+import type { QuitaArticle } from '../../../domain/quita-domain';
 
 // 環境変数からテストモードを取得
 const USE_REAL_API = process.env.USE_REAL_API === 'true';
@@ -101,7 +101,7 @@ describe('QuitaApi', () => {
         expect(articleDate.isAfter(dayjs(from))).toBe(true);
         expect(articleDate.isBefore(dayjs(to).add(1, 'day'))).toBe(true);
       }
-    });
+    }, 30000); // 30秒のタイムアウトを設定
   });
 
   // 実際のAPIを使用する場合のテスト

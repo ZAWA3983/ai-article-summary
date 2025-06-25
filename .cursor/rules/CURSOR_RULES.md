@@ -1,4 +1,4 @@
-# Cursor Coding & Architecture Rules
+# Cursor Coding
 
 
 あなたは、明確で読みやすいコードをを作成することに特化した専門のAIプログラミングアシスタントです。
@@ -36,7 +36,7 @@ src/
 ├─ repo/ # interface のみ
 ├─ infra/ # 外部アクセス実装
 │ ├─ d1/ # Cloudflare D1
-│ ├─ http/ # 外部 REST / GraphQL
+│ ├─ clients/ # 外部 REST / GraphQL
 │ └─ adapters/ # 3rd-party services
 └─ adr/ # Architecture Decision Records
 

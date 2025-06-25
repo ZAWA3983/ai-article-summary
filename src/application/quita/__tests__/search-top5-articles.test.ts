@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { SearchArticlesUseCase } from '../search-top5-articles';
-import type { QuitaArticle } from '../../../domain/quita/types';
-import type { QuitaRepository } from '../../../repo/quita';
-import { QuitaApi } from '../../../infra/http/quita';
+import type { QuitaArticle } from '../../../domain/quita-domain';
+import type { QuitaRepository } from '../../../repo/quita-repo';
+import { QuitaApi } from '../../../infra/clients/quita';
 
 const USE_REAL_API = process.env.USE_REAL_API === 'true';
 
@@ -159,5 +159,5 @@ describe('SearchArticlesUseCase', () => {
       expect(articles.length).toBeGreaterThan(0);
       expect(articles[0].likes_count).toBeGreaterThanOrEqual(articles[articles.length - 1].likes_count);
     }
-  });
+  }, 30000); // 30秒のタイムアウトを設定
 }); 
