@@ -1,10 +1,14 @@
 import { describe, expect, it, vi } from 'vitest';
-import { SummarizeTop5ArticlesUseCase } from '../summarize-top5-articles';
-import { SearchArticlesUseCase } from '../search-top5-articles';
-import { SummarizeArticleUseCase } from '../../summarize-article';
-import type { QuitaArticle, QuitaArticleSummary, ParsedSummary } from '../../../domain/quita-domain';
-import { QuitaApi } from '../../../infra/clients/quita';
+import type {
+  ParsedSummary,
+  QuitaArticle,
+  QuitaArticleSummary,
+} from '../../../domain/quita-domain';
 import { GeminiClient } from '../../../infra/clients/gemini';
+import { QuitaApi } from '../../../infra/clients/quita';
+import { SummarizeArticleUseCase } from '../../summarize-article';
+import { SearchArticlesUseCase } from '../search-top5-articles';
+import { SummarizeTop5ArticlesUseCase } from '../summarize-top5-articles';
 
 const USE_REAL_API = process.env.USE_REAL_API === 'true';
 
@@ -23,13 +27,13 @@ describe('SummarizeTop5ArticlesUseCase', () => {
       tags: [
         {
           name: 'AI',
-          versions: []
-        }
+          versions: [],
+        },
       ],
       user: {
         id: 'user1',
-        name: 'テストユーザー1'
-      }
+        name: 'テストユーザー1',
+      },
     },
     {
       id: 'article2',
@@ -43,14 +47,14 @@ describe('SummarizeTop5ArticlesUseCase', () => {
       tags: [
         {
           name: 'AI',
-          versions: []
-        }
+          versions: [],
+        },
       ],
       user: {
         id: 'user2',
-        name: 'テストユーザー2'
-      }
-    }
+        name: 'テストユーザー2',
+      },
+    },
   ];
 
   const mockSummaries: readonly QuitaArticleSummary[] = [
@@ -61,10 +65,10 @@ describe('SummarizeTop5ArticlesUseCase', () => {
         heading: '生成AIの活用事例と実践方法',
         catch: 'テスト記事1のキャッチコピーです。',
         summaryText: 'テスト記事1の要約文です。生成AIの活用について詳しく解説しています。',
-        targetAudience: '生成AIに興味があるエンジニア'
+        targetAudience: '生成AIに興味があるエンジニア',
       },
       originalArticle: mockArticles[0],
-      disclaimer: 'この要約はAIによって生成されました。'
+      disclaimer: 'この要約はAIによって生成されました。',
     },
     {
       title: '生成AIの最新動向',
@@ -73,23 +77,26 @@ describe('SummarizeTop5ArticlesUseCase', () => {
         heading: '生成AIの最新動向と今後の展望',
         catch: 'テスト記事2のキャッチコピーです。',
         summaryText: 'テスト記事2の要約文です。生成AIの最新動向について詳しく解説しています。',
-        targetAudience: 'AI技術の最新動向を追いたいエンジニア'
+        targetAudience: 'AI技術の最新動向を追いたいエンジニア',
       },
       originalArticle: mockArticles[1],
-      disclaimer: 'この要約はAIによって生成されました。'
-    }
+      disclaimer: 'この要約はAIによって生成されました。',
+    },
   ];
 
   // モックの作成
   const mockSearchArticlesUseCase = {
-    execute: vi.fn().mockResolvedValue(mockArticles)
+    execute: vi.fn().mockResolvedValue(mockArticles),
   } as unknown as SearchArticlesUseCase;
 
   const mockSummarizeArticleUseCase = {
     execute: vi.fn().mockImplementation((article: QuitaArticle) => {
-      const summary = mockSummaries.find(s => s.originalArticle.id === article.id);
-      return Promise.resolve(summary!);
-    })
+      const summary = mockSummaries.find((s) => s.originalArticle.id === article.id);
+      if (!summary) {
+        throw new Error(`Summary not found for article ${article.id}`);
+      }
+      return Promise.resolve(summary);
+    }),
   } as unknown as SummarizeArticleUseCase;
 
   // 実際のAPIを使用する場合のセットアップ
@@ -152,14 +159,14 @@ describe('SummarizeTop5ArticlesUseCase', () => {
 
       // 結果の検証
       expect(summaries.length).toBeGreaterThan(0);
-      summaries.forEach(summary => {
+      for (const summary of summaries) {
         expect(summary).toHaveProperty('title');
         expect(summary).toHaveProperty('url');
         expect(summary).toHaveProperty('summary');
         expect(summary).toHaveProperty('originalArticle');
         expect(summary).toHaveProperty('disclaimer');
         expect(summary.disclaimer).toBe('この要約はAIによって生成されました。');
-      });
+      }
     }, 60000); // 60秒のタイムアウト geminiの応答を待つため
   });
-}); 
+});

@@ -3,4 +3,4 @@ import { QuitaArticleSummary } from '../domain/quita-domain';
 
 export interface SummarizeRepository {
   summarize(article: QuitaArticle): Promise<QuitaArticleSummary>;
-} 
+}

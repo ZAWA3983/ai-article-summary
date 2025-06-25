@@ -18,8 +18,6 @@ export class SearchArticlesUseCase {
     });
 
     // いいね数でソートして上位5件を取得
-    return [...articles]
-      .sort((a, b) => b.likes_count - a.likes_count)
-      .slice(0, 5);
+    return [...articles].sort((a, b) => b.likes_count - a.likes_count).slice(0, 5);
   }
 }

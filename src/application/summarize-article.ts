@@ -8,4 +8,4 @@ export class SummarizeArticleUseCase {
   async execute(article: QuitaArticle): Promise<QuitaArticleSummary> {
     return this.summarizeRepository.summarize(article);
   }
-} 
+}

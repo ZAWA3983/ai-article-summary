@@ -9,7 +9,7 @@ export class QuitaApi implements QuitaRepository {
   async searchArticles(params: QuitaSearchParams): Promise<readonly QuitaArticle[]> {
     const allArticles: QuitaArticle[] = [];
     let page = 1;
-    
+
     while (page <= this.MAX_PAGES) {
       const queryParams = new URLSearchParams({
         query: `${params.query} created:>=${params.created_at.from} created:<=${params.created_at.to}`,
@@ -28,9 +28,9 @@ export class QuitaApi implements QuitaRepository {
         throw new Error(`Quita API error: ${response.statusText}`);
       }
 
-      const articles = await response.json() as readonly QuitaArticle[];
+      const articles = (await response.json()) as readonly QuitaArticle[];
       if (articles.length === 0) break; // 記事がなくなったら終了
-      
+
       allArticles.push(...articles);
       page++;
     }

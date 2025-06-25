@@ -1,6 +1,6 @@
 import { QuitaArticleSummary } from '../../domain/quita-domain';
-import { SearchArticlesUseCase } from './search-top5-articles';
 import { SummarizeArticleUseCase } from '../summarize-article';
+import { SearchArticlesUseCase } from './search-top5-articles';
 
 export class SummarizeTop5ArticlesUseCase {
   constructor(
@@ -25,4 +25,4 @@ export class SummarizeTop5ArticlesUseCase {
 
     return summaries;
   }
-} 
+}

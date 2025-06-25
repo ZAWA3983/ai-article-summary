@@ -5,4 +5,4 @@ export default defineConfig({
     testTimeout: 30000, // 30秒に延長
     environment: 'node',
   },
-}); 
+});

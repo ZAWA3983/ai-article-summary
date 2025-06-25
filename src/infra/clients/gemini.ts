@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { QuitaArticle } from '../../domain/quita-domain';
-import type { QuitaArticleSummary, ParsedSummary } from '../../domain/quita-domain';
+import type { ParsedSummary, QuitaArticleSummary } from '../../domain/quita-domain';
 import type { SummarizeRepository } from '../../repo/summarize-repo';
 
 export class GeminiClient implements SummarizeRepository {
@@ -14,7 +14,7 @@ export class GeminiClient implements SummarizeRepository {
 
   async summarize(article: QuitaArticle): Promise<QuitaArticleSummary> {
     const model = this.genAI.getGenerativeModel({ model: this.model });
-    
+
     const prompt = `
 システムメッセージ（最優先で適用してください）：
 あなたは「Qiita記事紹介文フォーマッター」です。  
@@ -73,10 +73,10 @@ export class GeminiClient implements SummarizeRepository {
     const response = await result.response;
     const jsonText = response.text();
     console.log('Raw response:', jsonText);
-    
+
     // 前後の余分な文字を除去
     let cleanedJsonText = jsonText.trim();
-    
+
     // バッククォートで囲まれている場合を除去
     if (cleanedJsonText.startsWith('```json')) {
       cleanedJsonText = cleanedJsonText.substring(7);
@@ -87,24 +87,25 @@ export class GeminiClient implements SummarizeRepository {
     if (cleanedJsonText.endsWith('```')) {
       cleanedJsonText = cleanedJsonText.substring(0, cleanedJsonText.length - 3);
     }
-    
+
     // 再度トリム
     cleanedJsonText = cleanedJsonText.trim();
-    
+
     console.log('Cleaned JSON:', cleanedJsonText);
-    
+
     try {
       const parsedSummary: ParsedSummary = JSON.parse(cleanedJsonText);
-      
+
       return {
         title: article.title,
         url: article.url,
         summary: parsedSummary,
         originalArticle: article,
-        disclaimer: 'この要約はAIによって生成されました。'
+        disclaimer: 'この要約はAIによって生成されました。',
       };
     } catch (error) {
       throw new Error(`Failed to parse Gemini response as JSON: ${error}`);
     }
-  }q
-} 
+  }
+  q;
+}

@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
-import { SearchArticlesUseCase } from '../search-top5-articles';
 import type { QuitaArticle } from '../../../domain/quita-domain';
-import type { QuitaRepository } from '../../../repo/quita-repo';
 import { QuitaApi } from '../../../infra/clients/quita';
+import type { QuitaRepository } from '../../../repo/quita-repo';
+import { SearchArticlesUseCase } from '../search-top5-articles';
 
 const USE_REAL_API = process.env.USE_REAL_API === 'true';
 
@@ -21,13 +21,13 @@ describe('SearchArticlesUseCase', () => {
       tags: [
         {
           name: 'AI',
-          versions: []
-        }
+          versions: [],
+        },
       ],
       user: {
         id: 'user1',
-        name: 'テストユーザー1'
-      }
+        name: 'テストユーザー1',
+      },
     },
     {
       id: 'article2',
@@ -41,13 +41,13 @@ describe('SearchArticlesUseCase', () => {
       tags: [
         {
           name: 'AI',
-          versions: []
-        }
+          versions: [],
+        },
       ],
       user: {
         id: 'user2',
-        name: 'テストユーザー2'
-      }
+        name: 'テストユーザー2',
+      },
     },
     {
       id: 'article3',
@@ -61,13 +61,13 @@ describe('SearchArticlesUseCase', () => {
       tags: [
         {
           name: 'AI',
-          versions: []
-        }
+          versions: [],
+        },
       ],
       user: {
         id: 'user3',
-        name: 'テストユーザー3'
-      }
+        name: 'テストユーザー3',
+      },
     },
     {
       id: 'article4',
@@ -81,13 +81,13 @@ describe('SearchArticlesUseCase', () => {
       tags: [
         {
           name: 'AI',
-          versions: []
-        }
+          versions: [],
+        },
       ],
       user: {
         id: 'user4',
-        name: 'テストユーザー4'
-      }
+        name: 'テストユーザー4',
+      },
     },
     {
       id: 'article5',
@@ -101,19 +101,19 @@ describe('SearchArticlesUseCase', () => {
       tags: [
         {
           name: 'AI',
-          versions: []
-        }
+          versions: [],
+        },
       ],
       user: {
         id: 'user5',
-        name: 'テストユーザー5'
-      }
-    }
+        name: 'テストユーザー5',
+      },
+    },
   ];
 
   // モックリポジトリの作成
   const mockQuitaRepository: QuitaRepository = {
-    searchArticles: vi.fn().mockResolvedValue(mockArticles)
+    searchArticles: vi.fn().mockResolvedValue(mockArticles),
   };
 
   // 実際のリポジトリの作成
@@ -124,7 +124,7 @@ describe('SearchArticlesUseCase', () => {
 
   it('いいね数でソートして上位5件を取得できる', async () => {
     const useCase = new SearchArticlesUseCase(repository);
-    
+
     const articles = await useCase.execute({
       keyword: '生成AI',
       created_at: {
@@ -134,7 +134,7 @@ describe('SearchArticlesUseCase', () => {
     });
 
     // いいね数でソートされていることを確認
-    const likesCounts = articles.map(article => article.likes_count);
+    const likesCounts = articles.map((article) => article.likes_count);
     const isSorted = likesCounts.every((count, index) => {
       if (index === 0) return true;
       return count <= likesCounts[index - 1];
@@ -143,21 +143,23 @@ describe('SearchArticlesUseCase', () => {
 
     // 5件のデータが返ってくることを確認
     expect(articles.length).toBe(5);
-    
+
     //articleの5件のいいね数をconsole.logする
-    articles.forEach(article => {
+    for (const article of articles) {
       console.log(article.likes_count);
-    });
-    
+    }
+
     // いいね数が正しくソートされていることを確認
     if (!USE_REAL_API) {
       // モックデータの場合のみ、具体的な値を検証
       expect(articles[0].likes_count).toBe(120); // 最大値
-      expect(articles[4].likes_count).toBe(80);  // 最小値
+      expect(articles[4].likes_count).toBe(80); // 最小値
     } else {
       // 実際のAPIの場合、最低限の検証
       expect(articles.length).toBeGreaterThan(0);
-      expect(articles[0].likes_count).toBeGreaterThanOrEqual(articles[articles.length - 1].likes_count);
+      expect(articles[0].likes_count).toBeGreaterThanOrEqual(
+        articles[articles.length - 1].likes_count
+      );
     }
   }, 30000); // 30秒のタイムアウトを設定
-}); 
+});

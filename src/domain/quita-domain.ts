@@ -38,4 +38,4 @@ export interface QuitaSearchParams {
     readonly from: string;
     readonly to: string;
   };
-} 
+}
