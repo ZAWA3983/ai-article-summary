@@ -22,5 +22,8 @@
       "trailingComma": "es5",
       "semicolons": "always"
     }
+  },
+  "files": {
+    "ignore": [".wrangler/**", "node_modules/**", "dist/**", "build/**"]
   }
 }
