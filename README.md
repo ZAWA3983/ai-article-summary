@@ -1,220 +1,145 @@
-# AI Article Summary
+# AI記事サマリー
 
-Qiitaの記事を自動で要約し、D1データベースに保存するCloudflare Workersアプリケーション
+**🚀 本番環境のリンク**: [https://ai-article-summary.pages.dev/](https://ai-article-summary.pages.dev/)
 
-## 🚀 セットアップ
+## なにをしたいか
 
-### 1. 必要なツールのインストール
+- 最新の技術記事のうち、人気のものに絞りたい。
+- その記事の内容が一目でわかるように集約したい。
 
-```bash
-# Node.js v20以上が必要
-node --version
 
-# Wrangler CLIのインストール
-npm install -g wrangler
-```
+### 解決したい課題
 
-### 2. Cloudflareアカウントの準備
+- **情報過多**: 毎日大量の技術記事が投稿され、全てを読む時間がない
+- **記事の質の見極め**: どの記事が自分にとって価値があるか判断が難しい
+- **効率的な学習**: 重要なポイントを素早く把握したい
 
-1. [Cloudflare](https://cloudflare.com)でアカウントを作成
-2. Wranglerでログイン
-```bash
-wrangler login
-```
+### 提供する価値
 
-### 3. D1データベースの作成
+- **自動要約**: 毎週月曜日に最新の「生成AI」関連記事を自動収集・要約
+- **質の高い記事**: その週に投稿された記事の中で人気度の高いものに絞る。
+- **時間の節約**: 長い記事を数分で理解できる要約を提供
 
-```bash
-# D1データベースを作成
-wrangler d1 create ai-article-summary-db
+## 目的
 
-# 作成されたデータベースIDをwrangler.tomlに設定
-# database_id = "your-database-id-here"
+### プライマリゴール
+開発者(特に私)が技術トレンドを効率的にキャッチアップできるプラットフォームの構築
 
-# スキーマを適用
-wrangler d1 execute ai-article-summary-db --file=./schema.sql --remote
-```
+### セカンダリゴール
+- AI技術の実践的な活用事例の検証
+- サーバーレスアーキテクチャでの自動化システムの構築
+- Cursorの上手な使い方の模索
 
-### 4. 環境変数の設定
+## 全体のアーキテクチャ
 
-### 1. ローカル開発用
+### 設計思想
+**完全分離型マイクロサービスアーキテクチャ**を採用し、各コンポーネントの独立性とスケーラビリティを重視しています。
 
-```bash
-# .envファイルを作成（env.exampleをコピー）
-cp env.example .env
-
-# .envファイルを編集して実際の値を設定
-# API_KEY=your-actual-secret-key
-# QUITA_API_TOKEN=your-actual-quita-token
-# GEMINI_API_KEY=your-actual-gemini-key
-```
-
-### 2. 本番環境用（Cloudflare Workers）
-
-```bash
-# APIキーを設定
-npx wrangler secret put API_KEY
-
-# Qiita APIトークンを設定
-npx wrangler secret put QUITA_API_TOKEN
-
-# Gemini APIキーを設定
-npx wrangler secret put GEMINI_API_KEY
-```
-
-**注意：** これらのコマンドを実行すると、対話的に値を入力するようになります。
-
-### 5. デプロイ
-
-```bash
-# 本番環境にデプロイ
-wrangler deploy
-
-# ローカル開発
-wrangler dev
-```
-
-## 📋 API仕様
-
-### ベースURL
-```
-https://quita-ai-summary.ai-article-summary.workers.dev
-```
-
-### エンドポイント一覧
-
-#### 1. 記事要約の実行
-**POST** `/api/summarize`
-
-記事の検索と要約を実行します。
-
-**リクエスト例：**
-```bash
-curl -X POST https://quita-ai-summary.ai-article-summary.workers.dev/api/summarize \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -d '{
-    "keyword": "生成AI",
-    "created_at": {
-      "from": "2024-01-01T00:00:00Z",
-      "to": "2024-01-31T23:59:59Z"
-    }
-  }'
-```
-
-**レスポンス例：**
-```json
-{
-  "success": true,
-  "message": "記事の要約が完了しました",
-  "summaries": [
-    {
-      "id": "1",
-      "title": "記事タイトル",
-      "url": "https://qiita.com/...",
-      "summary": "要約内容...",
-      "keyword": "生成AI",
-      "created_at": "2024-01-15T10:00:00Z"
-    }
-  ]
-}
-```
-
-#### 2. 要約記事一覧の取得
-**GET** `/api/summaries`
-
-保存されている要約記事の一覧を取得します。
-
-**リクエスト例：**
-```bash
-curl https://quita-ai-summary.ai-article-summary.workers.dev/api/summaries
-```
-
-**レスポンス例：**
-```json
-{
-  "success": true,
-  "summaries": [
-    {
-      "id": "1",
-      "title": "記事タイトル",
-      "url": "https://qiita.com/...",
-      "summary": "要約内容...",
-      "keyword": "生成AI",
-      "created_at": "2024-01-15T10:00:00Z"
-    }
-  ]
-}
-```
-
-#### 3. 特定記事の詳細取得
-**GET** `/api/summaries/{id}`
-
-指定されたIDの要約記事の詳細を取得します。
-
-**リクエスト例：**
-```bash
-curl https://quita-ai-summary.ai-article-summary.workers.dev/api/summaries/1
-```
-
-#### 4. 記事検索
-**GET** `/api/summaries/search?q={keyword}`
-
-キーワードで要約記事を検索します。
-
-**リクエスト例：**
-```bash
-curl "https://quita-ai-summary.ai-article-summary.workers.dev/api/summaries/search?q=生成AI"
-```
-
-### 認証と制限
-
-**認証：**
-- 要約実行エンドポイント（`/api/summarize`）にはAPIキー認証が必要
-- `Authorization: Bearer YOUR_API_KEY`ヘッダーを設定
-
-**レート制限：**
-- 1分間に最大3回まで
-- 不正なアクセスは401エラーで拒否
-- レート制限超過時は429エラーが返される
-
-**エラーレスポンス：**
-```json
-{
-  "success": false,
-  "error": "エラーメッセージ"
-}
-```
-
-## 🏗️ アーキテクチャ
+### システム構成
 
 ```
-src/
-├── application/     # ユースケース層
-├── domain/         # ドメインモデル
-├── infra/          # インフラ層（D1、外部API）
-├── repo/           # リポジトリインターフェース
-└── services/       # サービス層
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │   Backend       │    │   External      │
+│   (React)       │◄──►│   (Workers)     │◄──►│   Services      │
+│                 │    │                 │    │                 │
+│ - Article List  │    │ - API Gateway   │    │ - Qiita API     │
+│ - Summary View  │    │ - AI Processing │    │ - Gemini AI     │
+│ - Modern UI     │    │ - Data Storage  │    │                 │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                              │
+                              ▼
+                       ┌─────────────────┐
+                       │   Database      │
+                       │   (D1)          │
+                       │                 │
+                       │ - Summaries     │
+                       │ - Metadata      │
+                       └─────────────────┘
 ```
 
-## 💰 料金
+### 技術選択の理由
 
-- **Cloudflare Workers**: 無料プランで1日100,000リクエスト
-- **D1 Database**: 無料プランで512MB、1日100,000読み書き
-- **定期実行**: 無料プランで1日100,000回まで
+#### フロントエンド: React + Vite + Cloudflare Pages
+- **React**: 業界標準で豊富なエコシステムと開発者体験
+- **Vite**: 高速な開発環境とビルド
+- **Mantine**: 豊富なUIコンポーネント
+- **Cloudflare Pages**: 無料プランが充実、Workersとの統合が優れている
 
-## 🔧 開発
+#### バックエンド: Cloudflare Workers + D1
+- **Workers**: 無料枠が十分、高い性能を提供
+- **D1**: 無料で利用可能、SQLiteベースで高速な分散データベース
+- **Cron Triggers**: 定期実行による自動化
 
-```bash
-# 依存関係のインストール
-pnpm install
+#### AI・外部サービス
+- **Gemini AI**: 学生向け無料プランが利用可能、高精度な要約生成
+- **Qiita API**: 日本語技術記事の豊富なソース
 
-# テスト実行
-pnpm test
+### データフロー
 
-# ローカル開発
-wrangler dev
+1. **定期収集** (毎週月曜日 7:00 JST)
+   - Qiitaから「生成AI」関連記事を検索
+   - 人気度で上位5件を選定
 
-# 本番デプロイ
-wrangler deploy
+2. **AI要約**
+   - Gemini AIで記事内容を要約
+   - キーポイントと技術的価値を抽出
+
+3. **データ保存**
+   - D1データベースに要約とメタデータを保存
+
+4. **ユーザー提供**
+   - Reactフロントエンドで要約一覧を表示
+   - 元記事へのリンクも提供
+
+## プロジェクト構造
+
 ```
+ai-article-summary/
+├── frontend/                    # React + Vite フロントエンド
+│   ├── src/
+│   │   ├── components/         # UIコンポーネント
+│   │   │   ├── ArticleCard.tsx # 記事カード表示
+│   │   │   └── ArticleList.tsx # 記事一覧表示
+│   │   ├── services/           # API通信層
+│   │   └── config/             # 環境設定
+│   └── package.json
+├── backend/                     # Cloudflare Workers バックエンド
+│   ├── src/
+│   │   ├── api/                # APIエンドポイント
+│   │   │   ├── summaries.ts    # 記事一覧API
+│   │   │   └── scheduled.ts    # 定期実行API
+│   │   ├── services/           # ビジネスロジック
+│   │   │   └── article/        # 記事関連サービス
+│   │   ├── infra/              # 外部サービス連携
+│   │   │   ├── quita.ts        # Qiita API クライアント
+│   │   │   └── gemini.ts       # Gemini AI クライアント
+│   │   └── repo/               # データアクセス層
+│   │       └── d1-repo.ts      # D1データベース操作
+│   ├── migrations/             # データベーススキーマ
+│   └── package.json
+├── bin/                        # 開発・デプロイスクリプト
+│   ├── db-setup.sh            # DB初期化
+│   ├── deploy.sh              # デプロイ自動化
+│   └── import-dev-data.sh     # 開発データ投入
+└── README.md
+```
+
+### アーキテクチャパターン
+
+#### バックエンド: クリーンアーキテクチャ
+- **API層**: リクエスト/レスポンス処理
+- **サービス層**: ビジネスロジック
+- **インフラ層**: 外部サービス連携
+- **リポジトリ層**: データアクセス
+
+#### フロントエンド: コンポーネントベース
+- **プレゼンテーション層**: UIコンポーネント
+- **サービス層**: API通信
+- **設定層**: 環境変数管理
+
+## 開発・デプロイ
+
+詳細なセットアップ手順は各ディレクトリのREADMEを参照してください
+
+- [フロントエンド開発ガイド](./frontend/README.md)
+- [バックエンド開発ガイド](./backend/README.md)

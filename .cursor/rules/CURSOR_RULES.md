@@ -7,8 +7,7 @@
 ## 0. Tech Stack
 - TypeScript 5.x, ES2024 modules, "strict": true, noUncheckedIndexedAccess: true。
 - Cloudflare Workers（D1/Secrets/定期実行）。
-- React 19 + Remix v2（App Router, Web拡張時）。
-- Mantine UI v7＋TailwindCSS v3（class戦略／mobile-first）。
+- React 18 + Mantine UI v7（SPA構成）。
 - Day.js（utc/timezoneプラグイン）, Zod, Biome（formatter & linter）。
 
 ──────────────────────────────────
@@ -18,7 +17,7 @@
 2. 小さな純粋関数を優先し、重複よりも「明示的な反復」とモジュール化を選ぶ。
 3. 変数・関数は動詞＋名詞、boolは is/has/should/can 接頭辞。
 4. 列挙型は禁止。as const オブジェクト or 文字列リテラル union を使用。
-5. すべて named export。default export は Remix ルートと RSC だけ。
+5. すべて named export。default export は React コンポーネントのみ。
 6. 非同期処理は async/await。公開関数／定数には readonly。
 7. 例外は throw/try-catch。Result<T,E> 型は採用しない。
 8. Biome のルールは厳守（disable コメント禁止）。
@@ -30,10 +29,10 @@ src/
 │  ├─ handlers/
 │  ├─ middleware/
 │  └─ index.ts
-├─ web/         # Webページ機能（将来追加予定）
-│  ├─ pages/
+├─ web/         # Webページ機能（React SPA）
 │  ├─ components/
-│  ├─ static/
+│  ├─ client.tsx
+│  ├─ index.html
 │  └─ index.ts
 ├─ shared/      # API・Webで共通利用するドメイン/ユースケース/サービス/リポジトリ/インフラ
 │  ├─ domain/
@@ -51,22 +50,21 @@ src/
 - DIはコンストラクタ注入。API/Webの各ハンドラーでユースケースを呼び出す。
 - 認証は api/middleware で実装し、必要なAPIハンドラーに注入する。
 - 静的ファイル配信やWebページ機能は web/ 配下で管理する。
-- RemixやReact等のUIフレームワークを導入する場合は web/ 配下に実装する。
+- React SPAは web/ 配下に実装し、esbuildでバンドルして配信する。
 
 ──────────────────────────────────
 ## 2. UI & Styling
-1. Mantine UIコンポーネント＋Tailwind utility。インライン style は禁止。
+1. Mantine UIコンポーネント。インライン style は禁止。
 2. コンポーネント階層
    - Publicコンポーネント → サブコンポーネント → hooks → helpers → types の順に記述。
-3. アクセシビリティ: Radix‐UI primitives を併用し、ARIA属性を必ず付与。
+3. アクセシビリティ: ARIA属性を必ず付与。
 4. 画像は WebP/AVIF、loading="lazy"、width/height を必ず指定。
-5. ルートごとに親 <Suspense> を配置し、クライアント部品は lazy()＋fallback。
-6. Tailwind でレスポンシブ（sm: 以上を足す）。Dark Mode は class 切替。
+5. クライアント部品は lazy()＋fallback。
+6. レスポンシブ（sm: 以上を足す）。Dark Mode は class 切替。
 
 ──────────────────────────────────
 ## 3. パフォーマンス & 可観測性
-- use client は最小限。データ取得・状態管理はサーバー側（loader / RSC）を優先。
-- useEffect と setState を減らし、RSC + defer + ストリーミングで描画。
+- useEffect と setState を最小限に。
 - 重い selector は useMemo / memo()。
 - Cloudflare Cache (KV) で読み取りをキャッシュ、mutation 時にタグ無効化。
 
