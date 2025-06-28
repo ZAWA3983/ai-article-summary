@@ -1,14 +1,12 @@
-# dependencies
 node_modules
 
-# production
-build
-dist
+test_data/
+.wrangler/  
 
-# misc
-.DS_Store
+*.tsbuildinfo
+vite.config.d.ts
+
+.dev.vars
 .env
 
-
-# TypeScript
-*.tsbuildinfo 
+dist/

@@ -27,19 +27,36 @@ jobs:
       with:
         path: |
           ~/.pnpm-store
-          node_modules
-        key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          backend/node_modules
+          frontend/node_modules
+        key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-pnpm-
 
-    - name: Install dependencies
+    - name: Install backend dependencies
+      working-directory: ./backend
       run: pnpm install
 
-    - name: Run linter
+    - name: Install frontend dependencies
+      working-directory: ./frontend
+      run: pnpm install
+
+    - name: Run backend linter
+      working-directory: ./backend
       run: pnpm run lint
 
-    - name: Run type check
+    - name: Run frontend linter
+      working-directory: ./frontend
+      run: pnpm run lint
+
+    - name: Run backend type check
+      working-directory: ./backend
       run: pnpm run type-check
 
-    - name: Run tests (mock mode)
-      run: pnpm run test 
+    - name: Run frontend type check
+      working-directory: ./frontend
+      run: pnpm run type-check
+
+    - name: Run backend tests (mock mode)
+      working-directory: ./backend
+      run: pnpm run test:mock 

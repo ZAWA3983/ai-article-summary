@@ -1,0 +1,29 @@
+.articleGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.articleItem {
+  flex: 1 1 300px;
+  max-width: calc(33.333% - 16px);
+  min-width: 280px;
+}
+
+/* タブレットサイズ（768px以下） */
+@media (max-width: 768px) {
+  .articleItem {
+    flex: 1 1 calc(50% - 12px);
+    max-width: calc(50% - 12px);
+  }
+}
+
+/* モバイルサイズ（480px以下） */
+@media (max-width: 480px) {
+  .articleItem {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+} 
