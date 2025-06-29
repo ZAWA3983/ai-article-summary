@@ -32,10 +32,7 @@ const GLASS_STYLES = {
 
 const TITLE_STYLES = {
   letterSpacing: '-0.02em',
-  background: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)',
-  WebkitBackgroundClip: 'text' as const,
-  WebkitTextFillColor: 'transparent',
-  backgroundClip: 'text' as const,
+  color: 'white',
   fontSize: 'clamp(36px, 5vw, 48px)',
   margin: 0,
   fontFamily: "'Poppins', sans-serif",
@@ -109,7 +106,7 @@ export function App() {
                 </Title>
                 <Text
                   size="lg"
-                  c="dark.7"
+                  c="white"
                   fw={500}
                   style={SUBTITLE_STYLES}
                 >
