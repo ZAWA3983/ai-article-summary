@@ -29,10 +29,7 @@ const GLASS_STYLES = {
 };
 const TITLE_STYLES = {
     letterSpacing: '-0.02em',
-    background: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    backgroundClip: 'text',
+    color: 'white',
     fontSize: 'clamp(36px, 5vw, 48px)',
     margin: 0,
     fontFamily: "'Poppins', sans-serif",
@@ -78,5 +75,5 @@ export function App() {
             headings: {
                 fontFamily: "'Poppins', sans-serif",
             },
-        }, children: _jsxs(Box, { style: BACKGROUND_STYLES, children: [_jsx(Box, { style: OVERLAY_STYLES }), _jsx(Stack, { gap: 0, style: { position: 'relative', zIndex: 2 }, children: _jsxs(Container, { size: "xl", py: "xl", children: [_jsx(Paper, { withBorder: true, radius: "xl", p: "xl", mb: "xl", style: GLASS_STYLES, children: _jsxs(Group, { justify: "center", align: "center", gap: "2rem", wrap: "wrap", children: [_jsx(Title, { order: 1, fw: 900, style: TITLE_STYLES, children: "AI\u6280\u8853\u8A18\u4E8B\u30B5\u30DE\u30EA\u30FC" }), _jsx(Text, { size: "lg", c: "dark.7", fw: 500, style: SUBTITLE_STYLES, children: "\u6700\u65B0\u306E\u6280\u8853\u8A18\u4E8B\u3092AI\u304C\u51DD\u7E2E\u3057\u3066\u304A\u5C4A\u3051" })] }) }), _jsx(ArticleList, { articles: articles, loading: loading, error: error })] }) })] }) }));
+        }, children: _jsxs(Box, { style: BACKGROUND_STYLES, children: [_jsx(Box, { style: OVERLAY_STYLES }), _jsx(Stack, { gap: 0, style: { position: 'relative', zIndex: 2 }, children: _jsxs(Container, { size: "xl", py: "xl", children: [_jsx(Paper, { withBorder: true, radius: "xl", p: "xl", mb: "xl", style: GLASS_STYLES, children: _jsxs(Group, { justify: "center", align: "center", gap: "2rem", wrap: "wrap", children: [_jsx(Title, { order: 1, fw: 900, style: TITLE_STYLES, children: "AI\u6280\u8853\u8A18\u4E8B\u30B5\u30DE\u30EA\u30FC" }), _jsx(Text, { size: "lg", c: "white", fw: 500, style: SUBTITLE_STYLES, children: "\u6700\u65B0\u306E\u6280\u8853\u8A18\u4E8B\u3092AI\u304C\u51DD\u7E2E\u3057\u3066\u304A\u5C4A\u3051" })] }) }), _jsx(ArticleList, { articles: articles, loading: loading, error: error })] }) })] }) }));
 }
