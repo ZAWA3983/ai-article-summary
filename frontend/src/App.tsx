@@ -48,6 +48,7 @@ const SUBTITLE_STYLES = {
   letterSpacing: '0.02em',
   textTransform: 'uppercase' as const,
   opacity: 0.9,
+  color: 'white',
 } as const;
 
 export function App() {

@@ -44,6 +44,7 @@ const SUBTITLE_STYLES = {
     letterSpacing: '0.02em',
     textTransform: 'uppercase',
     opacity: 0.9,
+    color: 'white',
 };
 export function App() {
     const [articles, setArticles] = useState([]);
